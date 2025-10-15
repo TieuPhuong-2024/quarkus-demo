@@ -1,0 +1,24 @@
+paypal:
+  base-url: https://api-m.sandbox.paypal.com   # Prod: https://api-m.paypal.com
+  client-id: ${PAYPAL_CLIENT_ID}
+  client-secret: ${PAYPAL_CLIENT_SECRET}
+
+quarkus:
+  rest-client:
+    paypal:
+      url: ${paypal.base-url}
+      verify-host: true
+
+  datasource:
+    db-kind: postgresql
+    username: postgres
+    password: postgres
+    jdbc:
+      url: jdbc:postgresql://localhost:5432/paypal_subscription_db
+      max-size: 16
+
+  hibernate-orm:
+    database:
+      default-catalog: update
+    log:
+      sql: true
