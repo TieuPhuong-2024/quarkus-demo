@@ -54,6 +54,9 @@ public class PayPalService {
     @RestClient
     PayPalWebhookClient webhookClient;
 
+    @Inject
+    SubscriptionService subscriptionService;
+
     private String bearerToken() {
         String basic = Base64.getEncoder().encodeToString(
                 (cfg.clientId() + ":" + cfg.clientSecret()).getBytes(StandardCharsets.UTF_8));
@@ -143,30 +146,7 @@ public class PayPalService {
     }
 
     public void handleWebhookEvent(WebhookEvent event) {
-        // Process the incoming webhook event
-        System.out.println("Received webhook event: " + event.getEventType() + " - " + event.getSummary());
-
-        try {
-            switch (event.getEventType()) {
-                case "BILLING.SUBSCRIPTION.CREATED":
-                    break;
-                case "BILLING.SUBSCRIPTION.ACTIVATED":
-                    break;
-                case "PAYMENT.SALE.COMPLETED":
-                    break;
-                case "BILLING.SUBSCRIPTION.CANCELLED":
-                    break;
-                case "BILLING.SUBSCRIPTION.SUSPENDED":
-                    break;
-                case "BILLING.SUBSCRIPTION.EXPIRED":
-                    break;
-                default:
-                    System.out.println("Unhandled event type: " + event.getEventType());
-                    break;
-            }
-        } catch (Exception e) {
-            System.err.println("Error processing webhook event: " + e.getMessage());
-            e.printStackTrace();
-        }
+        // Delegate webhook processing to the subscription service
+        subscriptionService.processWebhookEvent(event);
     }
 }
