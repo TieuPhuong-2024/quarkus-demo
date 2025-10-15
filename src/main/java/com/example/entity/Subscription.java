@@ -1,10 +1,21 @@
 package com.example.entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "subscriptions")
@@ -22,8 +34,7 @@ import java.util.List;
 public class Subscription {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(name = "paypal_subscription_id", unique = true, nullable = false)
     private String paypalSubscriptionId;
@@ -40,6 +51,7 @@ public class Subscription {
     private SubscriptionStatus status;
 
     @Column(name = "quantity")
+    @Builder.Default
     private String quantity = "1";
 
     @CreationTimestamp
@@ -89,6 +101,11 @@ public class Subscription {
     @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<PaymentTransaction> paymentTransactions = new ArrayList<>();
+
+    @PrePersist
+    public void init() {
+        id = "SUB-" + UUID.randomUUID();
+    }
 
     // Helper methods
     public boolean isActive() {

@@ -1,7 +1,9 @@
 package com.example.service;
 
 import com.example.dto.subscription.CreateSubscriptionRequest;
-import com.example.entity.*;
+import com.example.entity.Subscription;
+import com.example.entity.SubscriptionStatus;
+import com.example.entity.User;
 import com.example.exception.SubscriptionException;
 import com.example.exception.SubscriptionNotFoundException;
 import com.example.exception.UserNotFoundException;
@@ -44,7 +46,7 @@ public class SubscriptionManagementService {
             throw new UserNotFoundException(userId);
         }
 
-        // Check if user already has an active subscription
+        // Check if a user already has an active subscription
         if (user.hasActiveSubscription()) {
             throw new IllegalStateException("User already has an active subscription");
         }
@@ -62,7 +64,7 @@ public class SubscriptionManagementService {
                 throw new RuntimeException("Failed to get subscription ID from PayPal response");
             }
 
-            // Create local subscription record
+            // Create a local subscription record
             Subscription subscription = Subscription.builder()
                     .user(user)
                     .paypalSubscriptionId(paypalSubscriptionId)
@@ -70,7 +72,7 @@ public class SubscriptionManagementService {
                     .status(SubscriptionStatus.APPROVAL_PENDING)
                     .quantity(request.quantity != null ? request.quantity : "1")
                     .startTime(request.startTime != null ?
-                        LocalDateTime.parse(request.startTime) : null)
+                            LocalDateTime.parse(request.startTime) : null)
                     .customId(request.customId)
                     .build();
 
@@ -86,11 +88,11 @@ public class SubscriptionManagementService {
     }
 
     /**
-     * Gets user's active subscription
+     * Gets a user's active subscription
      */
     public Optional<Subscription> getUserActiveSubscription(Long userId) {
         List<Subscription> activeSubscriptions = subscriptionRepository.findByUserIdAndStatus(userId, SubscriptionStatus.ACTIVE);
-        return activeSubscriptions.isEmpty() ? Optional.empty() : Optional.of(activeSubscriptions.get(0));
+        return activeSubscriptions.isEmpty() ? Optional.empty() : Optional.of(activeSubscriptions.getFirst());
     }
 
     /**
@@ -101,7 +103,7 @@ public class SubscriptionManagementService {
     }
 
     /**
-     * Checks if user has an active subscription
+     * Checks if a user has an active subscription
      */
     public boolean hasActiveSubscription(Long userId) {
         return subscriptionRepository.countByUserAndStatus(getUserById(userId), SubscriptionStatus.ACTIVE) > 0;
@@ -112,7 +114,7 @@ public class SubscriptionManagementService {
      */
     public Optional<Subscription> getSubscriptionByPayPalId(String paypalSubscriptionId) {
         List<Subscription> subscriptions = subscriptionRepository.findByPaypalSubscriptionId(paypalSubscriptionId);
-        return subscriptions.isEmpty() ? Optional.empty() : Optional.of(subscriptions.get(0));
+        return subscriptions.isEmpty() ? Optional.empty() : Optional.of(subscriptions.getFirst());
     }
 
     /**
@@ -130,7 +132,7 @@ public class SubscriptionManagementService {
         // Verify ownership
         if (!subscription.getUser().getId().equals(userId)) {
             throw new SubscriptionException("SUBSCRIPTION_OWNERSHIP_ERROR",
-                "Subscription does not belong to user");
+                    "Subscription does not belong to user");
         }
 
         if (subscription.isCancelled()) {
@@ -162,13 +164,10 @@ public class SubscriptionManagementService {
      */
     public boolean hasAccessToFeature(Long userId, String feature) {
         Optional<Subscription> activeSubscription = getUserActiveSubscription(userId);
-        if (activeSubscription.isEmpty()) {
-            return false;
-        }
+        return activeSubscription.map(Subscription::isActive).orElse(false);
 
         // Here you could implement feature-based access control
         // For now, any active subscription grants access to all features
-        return activeSubscription.get().isActive();
     }
 
     /**
@@ -201,7 +200,7 @@ public class SubscriptionManagementService {
             throw new IllegalArgumentException("Subscription not found: " + paypalSubscriptionId);
         }
 
-        Subscription subscription = subscriptions.get(0);
+        Subscription subscription = subscriptions.getFirst();
         subscription.setUser(user);
         subscriptionRepository.persist(subscription);
 
@@ -221,7 +220,7 @@ public class SubscriptionManagementService {
             return;
         }
 
-        Subscription subscription = subscriptions.get(0);
+        Subscription subscription = subscriptions.getFirst();
         if (subscription.getStatus() == SubscriptionStatus.ACTIVE) {
             logger.info("Subscription {} is already active", paypalSubscriptionId);
             return;
@@ -246,16 +245,6 @@ public class SubscriptionManagementService {
     /**
      * Subscription statistics data class
      */
-    public static class SubscriptionStats {
-        private final long totalSubscriptions;
-        private final long activeSubscriptions;
-
-        public SubscriptionStats(long totalSubscriptions, long activeSubscriptions) {
-            this.totalSubscriptions = totalSubscriptions;
-            this.activeSubscriptions = activeSubscriptions;
-        }
-
-        public long getTotalSubscriptions() { return totalSubscriptions; }
-        public long getActiveSubscriptions() { return activeSubscriptions; }
+    public record SubscriptionStats(long totalSubscriptions, long activeSubscriptions) {
     }
 }

@@ -1,7 +1,10 @@
 package com.example.service;
 
 import com.example.dto.webhook.WebhookEvent;
-import com.example.entity.*;
+import com.example.entity.PaymentStatus;
+import com.example.entity.PaymentTransaction;
+import com.example.entity.Subscription;
+import com.example.entity.SubscriptionStatus;
 import com.example.repository.PaymentTransactionRepository;
 import com.example.repository.SubscriptionRepository;
 import com.example.repository.UserRepository;
@@ -16,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 @ApplicationScoped
 public class SubscriptionService {

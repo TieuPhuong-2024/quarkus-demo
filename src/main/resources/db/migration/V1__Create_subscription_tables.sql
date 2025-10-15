@@ -1,8 +1,8 @@
 -- Create subscription management tables
 
--- Users table (if not exists)
+-- Users' table (if not exists)
 CREATE TABLE IF NOT EXISTS users (
-    id BIGSERIAL PRIMARY KEY,
+    id VARCHAR(50) PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -10,11 +10,11 @@ CREATE TABLE IF NOT EXISTS users (
     is_active BOOLEAN NOT NULL DEFAULT true
 );
 
--- Subscriptions table
+-- Subscription table
 CREATE TABLE IF NOT EXISTS subscriptions (
-    id BIGSERIAL PRIMARY KEY,
+    id VARCHAR(50) PRIMARY KEY,
     paypal_subscription_id VARCHAR(255) NOT NULL UNIQUE,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id VARCHAR(50) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     plan_id VARCHAR(255) NOT NULL,
     status VARCHAR(50) NOT NULL CHECK (status IN ('CREATED', 'APPROVAL_PENDING', 'ACTIVE', 'SUSPENDED', 'CANCELLED', 'EXPIRED')),
     quantity VARCHAR(50) NOT NULL DEFAULT '1',
@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 
 -- Payment transactions table
 CREATE TABLE IF NOT EXISTS payment_transactions (
-    id BIGSERIAL PRIMARY KEY,
-    subscription_id BIGINT NOT NULL REFERENCES subscriptions(id) ON DELETE CASCADE,
+    id VARCHAR(50) PRIMARY KEY,
+    subscription_id VARCHAR(50) NOT NULL REFERENCES subscriptions(id) ON DELETE CASCADE,
     paypal_transaction_id VARCHAR(255) UNIQUE,
     paypal_payment_id VARCHAR(255),
     status VARCHAR(50) NOT NULL CHECK (status IN ('PENDING', 'COMPLETED', 'FAILED', 'CANCELLED', 'REFUNDED', 'PARTIALLY_REFUNDED')),
@@ -69,29 +69,3 @@ CREATE INDEX IF NOT EXISTS idx_payments_date ON payment_transactions(payment_dat
 
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_active ON users(is_active);
-
--- Create updated_at trigger function for users table (if PostgreSQL)
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_trigger WHERE tgname = 'update_users_updated_at'
-    ) THEN
-        CREATE OR REPLACE FUNCTION update_updated_at_column()
-        RETURNS TRIGGER AS $$
-        BEGIN
-            NEW.updated_at = CURRENT_TIMESTAMP;
-            RETURN NEW;
-        END;
-        $$ language 'plpgsql';
-
-        CREATE TRIGGER update_users_updated_at
-            BEFORE UPDATE ON users
-            FOR EACH ROW
-            EXECUTE FUNCTION update_updated_at_column();
-
-        CREATE TRIGGER update_subscriptions_updated_at
-            BEFORE UPDATE ON subscriptions
-            FOR EACH ROW
-            EXECUTE FUNCTION update_updated_at_column();
-    END IF;
-END $$;
