@@ -2,11 +2,9 @@ package com.example.client;
 
 import com.example.dto.subscription.CreateSubscriptionRequest;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -22,10 +20,4 @@ public interface PayPalSubscriptionsClient {
     @Produces(MediaType.APPLICATION_JSON)
     Map<String, Object> create(@HeaderParam("Authorization") String bearer,
                                CreateSubscriptionRequest request);
-
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    Map<String, Object> get(@HeaderParam("Authorization") String bearer,
-                            @PathParam("id") String subscriptionId);
 }

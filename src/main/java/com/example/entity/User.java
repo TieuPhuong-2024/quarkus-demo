@@ -50,22 +50,4 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Subscription> subscriptions = new ArrayList<>();
-
-    // Helper methods
-    public Subscription getActiveSubscription() {
-        return subscriptions.stream()
-                .filter(Subscription::isActive)
-                .findFirst()
-                .orElse(null);
-    }
-
-    public List<Subscription> getActiveSubscriptions() {
-        return subscriptions.stream()
-                .filter(Subscription::isActive)
-                .toList();
-    }
-
-    public boolean hasActiveSubscription() {
-        return subscriptions.stream().anyMatch(Subscription::isActive);
-    }
 }

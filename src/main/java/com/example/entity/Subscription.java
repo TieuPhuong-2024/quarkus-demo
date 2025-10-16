@@ -98,10 +98,6 @@ public class Subscription {
     @Column(name = "billing_frequency")
     private String billingFrequency;
 
-    @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<PaymentTransaction> paymentTransactions = new ArrayList<>();
-
     @PrePersist
     public void init() {
         id = "SUB-" + UUID.randomUUID();
@@ -110,21 +106,5 @@ public class Subscription {
     // Helper methods
     public boolean isActive() {
         return status == SubscriptionStatus.ACTIVE;
-    }
-
-    public boolean isPending() {
-        return status == SubscriptionStatus.APPROVAL_PENDING || status == SubscriptionStatus.CREATED;
-    }
-
-    public boolean isCancelled() {
-        return status == SubscriptionStatus.CANCELLED;
-    }
-
-    public boolean isSuspended() {
-        return status == SubscriptionStatus.SUSPENDED;
-    }
-
-    public boolean isExpired() {
-        return status == SubscriptionStatus.EXPIRED;
     }
 }
