@@ -1,83 +1,116 @@
 package com.example.dto.subscription;
 
-import com.example.dto.Money;
-import com.example.dto.Subscriber;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Data
+@NoArgsConstructor
 public class CreateSubscriptionRequest {
+
     @JsonProperty("plan_id")
-    public String planId;
+    private String planId;
 
     @JsonProperty("start_time")
-    public String startTime;                 // ISO 8601, optional
-
-    public String quantity;                  // optional (mặc định "1")
+    private String startTime;
 
     @JsonProperty("shipping_amount")
-    public Money shippingAmount;             // optional
+    private ShippingAmount shippingAmount;
 
-    public Subscriber subscriber;            // optional
+    @JsonProperty("subscriber")
+    private Subscriber subscriber;
 
     @JsonProperty("application_context")
-    public ApplicationContext applicationContext; // return_url, cancel_url, ...
+    private ApplicationContext applicationContext;
 
-    @JsonProperty("custom_id")
-    public String customId;                  // optional
+    // Các lớp lồng vào bên trong
+    @Data
+    @NoArgsConstructor
+    public static class ShippingAmount {
+        @JsonProperty("currency_code")
+        private String currencyCode;
+        @JsonProperty("value")
+        private String value;
+    }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Data
+    @NoArgsConstructor
+    public static class Subscriber {
+        @JsonProperty("name")
+        private Name name;
+        @JsonProperty("email_address")
+        private String emailAddress;
+        @JsonProperty("shipping_address")
+        private ShippingAddress shippingAddress;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Name {
+        @JsonProperty("given_name")
+        private String givenName;
+        @JsonProperty("surname")
+        private String surname;
+    }
+
+    @Data
+    @NoArgsConstructor
     public static class ShippingAddress {
-        public ShippingName name;
-        public Address address;
+        @JsonProperty("name")
+        private FullName name;
+        @JsonProperty("address")
+        private Address address;
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class ShippingName {
+    @Data
+    @NoArgsConstructor
+    public static class FullName {
         @JsonProperty("full_name")
-        public String fullName;
+        private String fullName;
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Data
+    @NoArgsConstructor
     public static class Address {
         @JsonProperty("address_line_1")
-        public String addressLine1;
+        private String addressLine1;
         @JsonProperty("address_line_2")
-        public String addressLine2;
+        private String addressLine2;
         @JsonProperty("admin_area_2")
-        public String adminArea2;            // city
+        private String adminArea2;
         @JsonProperty("admin_area_1")
-        public String adminArea1;            // state
+        private String adminArea1;
         @JsonProperty("postal_code")
-        public String postalCode;
+        private String postalCode;
         @JsonProperty("country_code")
-        public String countryCode;
+        private String countryCode;
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Data
+    @NoArgsConstructor
     public static class ApplicationContext {
         @JsonProperty("brand_name")
-        public String brandName;             // optional
-        public String locale;                // optional
+        private String brandName;
+        @JsonProperty("locale")
+        private String locale;
         @JsonProperty("shipping_preference")
-        public String shippingPreference;    // GET_FROM_FILE | NO_SHIPPING | SET_PROVIDED_ADDRESS
+        private String shippingPreference;
         @JsonProperty("user_action")
-        public String userAction;            // SUBSCRIBE_NOW | CONTINUE
+        private String userAction;
         @JsonProperty("payment_method")
-        public PaymentMethod paymentMethod;  // optional
+        private PaymentMethod paymentMethod;
         @JsonProperty("return_url")
-        public String returnUrl;
+        private String returnUrl;
         @JsonProperty("cancel_url")
-        public String cancelUrl;
-        @JsonProperty("landing_page")
-        public String landingPage;           // LOGIN | BILLING | NO_PREFERENCE (optional)
+        private String cancelUrl;
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Data
+    @NoArgsConstructor
     public static class PaymentMethod {
         @JsonProperty("payer_selected")
-        public String payerSelected;         // e.g. PAYPAL
+        private String payerSelected;
         @JsonProperty("payee_preferred")
-        public String payeePreferred;        // IMMEDIATE_PAYMENT_REQUIRED | UNRESTRICTED
+        private String payeePreferred;
     }
 }

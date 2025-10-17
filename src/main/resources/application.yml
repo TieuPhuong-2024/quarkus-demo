@@ -1,5 +1,5 @@
 paypal:
-  base-url: https://api-m.sandbox.paypal.com   # Prod: https://api-m.paypal.com
+  base-url: https://api.sandbox.paypal.com   # Prod: https://api-m.paypal.com
   client-id: ${PAYPAL_CLIENT_ID}
   client-secret: ${PAYPAL_CLIENT_SECRET}
 
@@ -25,13 +25,3 @@ quarkus:
   hibernate-orm:
     database:
       default-catalog: update
-    log:
-      sql: false
-    validate-in-dev-mode: false
-
-  log:
-    level: INFO
-    category:
-      "com.example": DEBUG
-      "org.hibernate.SQL": INFO
-      "org.hibernate.type.descriptor.sql.BasicBinder": INFO
