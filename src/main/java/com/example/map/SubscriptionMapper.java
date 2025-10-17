@@ -5,6 +5,8 @@ import com.example.entity.Subscription;
 import com.example.entity.SubscriptionStatus;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.util.Optional;
+
 @ApplicationScoped
 public class SubscriptionMapper {
 
@@ -15,10 +17,11 @@ public class SubscriptionMapper {
         }
         Subscription.SubscriptionBuilder builder = Subscription.builder();
 
-        var approveLink = response.getLinks().stream()
-                .filter(link -> "approve".equals(link.getRel()))
-                .findFirst()
-                .map(CreatePayPalSubscriptionResponse.Link::getHref)
+        String approveLink = Optional.ofNullable(response.getLinks())
+                .flatMap(links -> links.stream()
+                        .filter(link -> "approve".equals(link.getRel()))
+                        .findFirst()
+                        .map(CreatePayPalSubscriptionResponse.Link::getHref))
                 .orElse("");
 
         builder

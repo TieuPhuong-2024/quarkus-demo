@@ -25,3 +25,11 @@ quarkus:
   hibernate-orm:
     database:
       default-catalog: update
+    log:
+      sql: true
+      format-sql: true
+
+  log:
+    level: INFO
+    console:
+      format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{3.}] (%t) %s%e%n"

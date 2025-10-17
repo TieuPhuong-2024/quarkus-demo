@@ -21,7 +21,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-flyway'
     implementation "io.quarkus:quarkus-config-yaml"
     implementation 'io.quarkus:quarkus-arc'
-    implementation 'io.quarkus:quarkus-logging-json'
+
     compileOnly("org.projectlombok:lombok:1.18.42")
     annotationProcessor("org.projectlombok:lombok:1.18.42")
     testImplementation 'io.quarkus:quarkus-junit5'

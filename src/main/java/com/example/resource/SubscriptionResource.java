@@ -1,5 +1,6 @@
 package com.example.resource;
 
+import com.example.dto.ApiResponse;
 import com.example.dto.subscription.CreatePayPalSubscriptionResponse;
 import com.example.dto.subscription.CreateSubscriptionRequest;
 import com.example.service.SubscriptionService;
@@ -22,21 +23,28 @@ public class SubscriptionResource {
     @POST
     @Produces("application/json")
     @Consumes("application/json")
-    public CreatePayPalSubscriptionResponse create(@HeaderParam("X-Crochet-Access-Token") String token,
-                                                   CreateSubscriptionRequest request) {
-        return subscriptionService.create(token, request);
+    public ApiResponse<CreatePayPalSubscriptionResponse> create(@HeaderParam("X-Crochet-Access-Token") String token,
+                                                                 CreateSubscriptionRequest request) {
+        CreatePayPalSubscriptionResponse response = subscriptionService.create(token, request);
+        return ApiResponse.success("Subscription created successfully", response);
     }
 
     @GET
     @Path("/return")
-    public String handleSubscriptionReturn(@QueryParam("subscription_id") String subscriptionId) {
+    public ApiResponse<Void> handleSubscriptionReturn(@QueryParam("subscription_id") String subscriptionId) {
         subscriptionService.handleSubscriptionReturn(subscriptionId);
-        return "OK I got subscription id here: " + subscriptionId;
+        return ApiResponse.success("Subscription activated successfully for ID: " + subscriptionId);
     }
 
     @GET
     @Path("/cancel")
-    public String handleSubscriptionCancel(@QueryParam("subscription_id") String subscriptionId) {
-        return "OK I canceled subscription id: " + subscriptionId;
+    public ApiResponse<Void> handleSubscriptionCancel(@QueryParam("subscription_id") String subscriptionId) {
+        return ApiResponse.success("Subscription cancellation acknowledged for ID: " + subscriptionId);
+    }
+
+    @GET
+    @Path("/webhook")
+    public ApiResponse<Void> handleWebhook(String payload) {
+        return ApiResponse.success("Webhook processed successfully");
     }
 }

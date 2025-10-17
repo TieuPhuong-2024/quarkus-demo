@@ -7,8 +7,15 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
-public class DateTimeUtils {
+public final class DateTimeUtils {
+
+    private static final Pattern TIMEZONE_OFFSET_PATTERN = Pattern.compile(".*[+\\-]\\d{2}:?\\d{2}$");
+
+    private DateTimeUtils() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     private static final List<DateTimeFormatter> FORMATTERS = Arrays.asList(
             // ISO 8601 with timezone Z
@@ -45,7 +52,7 @@ public class DateTimeUtils {
         }
 
         // Try parsing with Instant first (handles ISO 8601 with Z and offset)
-        if (dateTimeStr.endsWith("Z") || dateTimeStr.matches(".*[+\\-]\\d{2}:?\\d{2}$")) {
+        if (dateTimeStr.endsWith("Z") || TIMEZONE_OFFSET_PATTERN.matcher(dateTimeStr).matches()) {
             try {
                 return LocalDateTime.ofInstant(Instant.parse(dateTimeStr), ZoneOffset.UTC);
             } catch (DateTimeParseException e) {
