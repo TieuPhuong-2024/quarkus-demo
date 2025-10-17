@@ -19,7 +19,6 @@ public class SubscriptionResource {
     @Inject
     SubscriptionService subscriptionService;
 
-
     @POST
     @Produces("application/json")
     @Consumes("application/json")
@@ -42,9 +41,10 @@ public class SubscriptionResource {
         return ApiResponse.success("Subscription cancellation acknowledged for ID: " + subscriptionId);
     }
 
-    @GET
+    @POST
     @Path("/webhook")
     public ApiResponse<Void> handleWebhook(String payload) {
+        subscriptionService.handleWebhookEvent(payload);
         return ApiResponse.success("Webhook processed successfully");
     }
 }
