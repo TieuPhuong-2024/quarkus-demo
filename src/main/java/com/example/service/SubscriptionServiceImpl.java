@@ -6,7 +6,7 @@ import com.example.dto.subscription.CreateSubscriptionRequest;
 import com.example.entity.SubscriptionStatus;
 import com.example.exception.ResourceNotFoundException;
 import com.example.exception.ValidationException;
-import com.example.map.SubscriptionMapper;
+import com.example.mapping.SubscriptionMapper;
 import com.example.repository.SubscriptionRepository;
 import com.example.service.client.PayPalAuthClientService;
 import com.example.util.JwtDecoder;

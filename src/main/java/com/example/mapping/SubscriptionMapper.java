@@ -1,4 +1,4 @@
-package com.example.map;
+package com.example.mapping;
 
 import com.example.dto.subscription.CreatePayPalSubscriptionResponse;
 import com.example.entity.Subscription;
