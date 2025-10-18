@@ -22,6 +22,10 @@ dependencies {
     implementation "io.quarkus:quarkus-config-yaml"
     implementation 'io.quarkus:quarkus-arc'
 
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
     compileOnly("org.projectlombok:lombok:1.18.42")
     annotationProcessor("org.projectlombok:lombok:1.18.42")
     testImplementation 'io.quarkus:quarkus-junit5'

@@ -22,9 +22,9 @@ public class SubscriptionResource {
     @POST
     @Produces("application/json")
     @Consumes("application/json")
-    public ApiResponse<CreatePayPalSubscriptionResponse> create(@HeaderParam("X-Crochet-Access-Token") String token,
+    public ApiResponse<CreatePayPalSubscriptionResponse> create(@HeaderParam("X-Crochet-Access-Token") String authHeader,
                                                                  CreateSubscriptionRequest request) {
-        CreatePayPalSubscriptionResponse response = subscriptionService.create(token, request);
+        CreatePayPalSubscriptionResponse response = subscriptionService.create(authHeader, request);
         return ApiResponse.success("Subscription created successfully", response);
     }
 

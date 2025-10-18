@@ -17,7 +17,7 @@ public class GlobalExceptionHandler implements ExceptionMapper<Throwable> {
     public Response toResponse(Throwable exception) {
         String traceId = UUID.randomUUID().toString();
 
-        log.error("Exception occurred - Trace ID: {}, Message: {}", traceId, exception.getMessage(), exception);
+        log.error("Exception occurred - Trace ID: {}, Message: {}", traceId, exception.getMessage());
 
         // Handle BusinessException (our custom exceptions)
         return switch (exception) {

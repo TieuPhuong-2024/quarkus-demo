@@ -8,6 +8,8 @@ quarkus:
     paypal:
       url: ${paypal.base-url}
       verify-host: true
+    user:
+      url: http://localhost:8082
 
   datasource:
     db-kind: postgresql
@@ -33,3 +35,6 @@ quarkus:
     level: INFO
     console:
       format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{3.}] (%t) %s%e%n"
+
+jwt:
+  key: ${CROCHET_TOKEN_KEY}

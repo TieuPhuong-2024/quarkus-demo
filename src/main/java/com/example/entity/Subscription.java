@@ -37,4 +37,6 @@ public class Subscription {
     @Column(name = "approve_link")
     private String approveLink;
 
+    @Column(name = "crochet_jwt_token")
+    private String crochetJwtToken;
 }
